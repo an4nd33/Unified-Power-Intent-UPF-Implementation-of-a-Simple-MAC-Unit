@@ -1,0 +1,92 @@
+############################################################
+# SUPPLY NETS
+############################################################
+
+create_supply_net VSS
+create_supply_net VDDL
+create_supply_net VDDH
+
+############################################################
+# SUPPLY SETS
+############################################################
+
+create_supply_set ss_high \
+    -function {power VDDH} \
+    -function {ground VSS}
+
+create_supply_set ss_low \
+    -function {power VDDL} \
+    -function {ground VSS}
+
+############################################################
+# POWER DOMAINS
+############################################################
+
+# Top domain (High VDD)
+create_power_domain PD_TOP \
+    -supply {primary ss_high}
+
+# Multiplier (Low VDD)
+create_power_domain PD_MUL \
+    -elements u_mul \
+    -supply {primary ss_low}
+
+# Accumulator (Low VDD)
+create_power_domain PD_ACC \
+    -elements u_acc \
+    -supply {primary ss_low}
+
+############################################################
+# SUPPLY PORTS (TOP LEVEL)
+############################################################
+
+create_supply_port VDDH -domain PD_TOP -direction in
+create_supply_port VDDL -domain PD_TOP -direction in
+create_supply_port VSS  -domain PD_TOP -direction in
+
+############################################################
+# CONNECT SUPPLIES
+############################################################
+
+connect_supply_net VDDH -ports VDDH
+connect_supply_net VDDL -ports VDDL
+connect_supply_net VSS  -ports VSS
+
+############################################################
+# LEVEL SHIFTERS - G4 PLACEMENT (ALL IN PARENT = PD_TOP)
+#
+# G4 style: both input and output level shifters for
+# PD_MUL and PD_ACC are placed in the parent domain (PD_TOP).
+# This means ALL LS cells are powered by VDDH (ss_high).
+#
+#   PD_TOP  ──[dlvl LS]──> PD_MUL ──>[ulvl LS]──> PD_TOP
+#   PD_TOP  ──[dlvl LS]──> PD_ACC ──>[ulvl LS]──> PD_TOP
+############################################################
+
+# SoC -> MUL (High->Low) : LS placed OUTSIDE MUL, in PD_TOP (parent)
+set_level_shifter LS_SOC_MUL \
+    -domain PD_MUL \
+    -applies_to inputs \
+    -rule high_to_low \
+    -location parent
+
+# MUL -> SoC (Low->High) : LS placed OUTSIDE MUL, in PD_TOP (parent)
+set_level_shifter LS_MUL_SOC \
+    -domain PD_MUL \
+    -applies_to outputs \
+    -rule low_to_high \
+    -location parent
+
+# SoC -> ACC (High->Low) : LS placed OUTSIDE ACC, in PD_TOP (parent)
+set_level_shifter LS_SOC_ACC \
+    -domain PD_ACC \
+    -applies_to inputs \
+    -rule high_to_low \
+    -location parent
+
+# ACC -> SoC (Low->High) : LS placed OUTSIDE ACC, in PD_TOP (parent)
+set_level_shifter LS_ACC_SOC \
+    -domain PD_ACC \
+    -applies_to outputs \
+    -rule low_to_high \
+    -location parent

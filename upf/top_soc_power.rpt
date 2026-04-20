@@ -1,0 +1,58 @@
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : top_soc
+Version: V-2023.12-SP4
+Date   : Fri Apr 17 13:22:34 2026
+****************************************
+
+
+Library(s) Used:
+
+    saed14rvt_base_ff0p715v125c (File: /home/synopsys/installs/LIBRARIES/SAED14_EDK/SAED14nm_EDK_STD_RVT/liberty/nldm/base/saed14rvt_base_ff0p715v125c.db)
+
+
+Operating Conditions: ff0p715v125c   Library: saed14rvt_base_ff0p715v125c
+Wire Load Model Mode: top
+
+Design        Wire Load Model            Library
+------------------------------------------------
+top_soc                8000              saed14rvt_base_ff0p715v125c
+
+
+Global Operating Voltage = 0.715
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+Attributes
+----------
+i - Including register clock pin internal power
+
+
+  Cell Internal Power  =  73.9476 uW   (40%)
+  Net Switching Power  = 112.5698 uW   (60%)
+                         ---------
+Total Dynamic Power    = 186.5175 uW  (100%)
+
+Cell Leakage Power     =  13.5284 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network  4.1334e-02            0.0000            0.0000        4.1334e-02  (  20.66%)  i
+register       2.2590e-03        3.1625e-03        1.7311e+06        7.1526e-03  (   3.58%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational  3.0355e-02            0.1094        1.1797e+07            0.1516  (  75.76%)
+--------------------------------------------------------------------------------------------------
+Total          7.3948e-02 mW         0.1126 mW     1.3528e+07 pW         0.2000 mW
+1
